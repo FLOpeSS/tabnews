@@ -1,6 +1,5 @@
 function Home() {
-    return <h1></h1>
+    return <h1>hello world, a simple message from testing</h1>
 }
-
 
 export default Home;
