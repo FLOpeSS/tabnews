@@ -4,7 +4,5 @@ initiating my tabnews clone
 
 
 Site link:
-    [Website link](sebasar.com.br)
-
-
+    sebasar.com.br
 
