@@ -9,10 +9,9 @@ const styles = {
     image: {
         display: 'block',
         margin: 'auto',
-        maxWidth: '100%', // Ensure image does not exceed container width
-        maxHeight: '100%', // Ensure image does not exceed container height
+        maxWidth: '90%', // Ensure image does not exceed container width
+        maxHeight: '90%', // Ensure image does not exceed container height
     },
-
 }
 
 function Home() {
@@ -26,6 +25,8 @@ function Home() {
               alt="Picture of the author's dog"
               style={styles.image}
             />
+            <div class="line" style={styles.line}></div>
+            <h1 style={styles.texting}>By the way, this is my dog smilling</h1>
             <Analytics />
         </div>
     );
