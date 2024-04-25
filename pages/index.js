@@ -1,5 +1,14 @@
+import { Analytics } from "@vercel/analytics/react"
+
 function Home() {
-    return <h1>In construction</h1>
+    return (
+        <body>
+            <h1>In construction by SebasOnRails</h1>
+            <Analytics />
+        </body>
+
+    )
 }
 
 export default Home;
+

@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "test": "jest",
-    "test:watch":"jest --watch"
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vercel/analytics": "^1.2.2",
     "next": "^13.1.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
