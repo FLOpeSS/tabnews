@@ -34,7 +34,6 @@ function Home() {
                     alt="Picture of the author's dog"
                     style={styles.image}
                 />
-                <div className="line" style={styles.line}></div>
                 <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
                 <Analytics />
             </div>
