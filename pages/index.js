@@ -16,7 +16,7 @@ const styles = {
     },
     image_second: {
         display: 'block',
-        marginTop: '10px',
+        marginTop: '7px',
         margin: 'auto',
         borderRadius: '10px',
     }
