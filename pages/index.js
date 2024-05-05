@@ -3,6 +3,10 @@ import Image from 'next/image'
 import Head from "next/head";
 
 const styles = {
+    container: {
+        textAlign: 'center',
+
+    },
     texting : {
         textAlign: 'center',
         marginTop: '50px'
@@ -15,6 +19,14 @@ const styles = {
         maxHeight: '90%', // Ensure image does not exceed container height
         borderRadius: '10px',
     },
+    link: {
+        display: 'inline-block',
+        marginTop: '20px',
+        // margin: 'auto',
+        textDecoreation: 'none',
+        color: 'white',
+        fontSize: '19px'
+    }
 }
 
 function Home() {
@@ -26,7 +38,7 @@ function Home() {
                 <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
                 <link rel="manifest" href="/site.webmanifest" />
             </Head>
-            <div>
+            <div style={styles.container}>
                 <h1 style={styles.texting}>Under construction by SebasOnRails</h1>
                 <Image
                     src="/dog.jpg"
@@ -35,14 +47,17 @@ function Home() {
                     alt="Picture of the author's dog"
                     style={styles.image}
                 />
+                <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
+                <h1 style={styles.texting}>Ajude o Rio Grande do Sul, se possível.</h1>
                 <Image
-                    src="/freya.jpg"
-                    width={300}
+                    src="/RS.png"
+                    width={500}
                     height={300}
                     alt="Picture of the author's dog"
                     style={styles.image}
+                    href
                 />
-                <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
+                <a style={styles.link} href="https://www.vakinha.com.br/4712837">vakinha para ajudar o Rio Grande do Sul</a>
                 <Analytics />
             </div>
         </>
