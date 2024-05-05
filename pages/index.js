@@ -24,7 +24,7 @@ const styles = {
         marginTop: '20px',
         // margin: 'auto',
         textDecoreation: 'none',
-        color: 'white',
+        color: 'grey',
         fontSize: '19px'
     }
 }
