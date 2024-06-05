@@ -40,6 +40,7 @@ function Home() {
             </Head>
             <div style={styles.container}>
                 <h1 style={styles.texting}>Under construction by SebasOnRails</h1>
+                <h2>This is not being on a good development system</h2>
                 <Image
                     src="/dog.jpg"
                     width={300}
@@ -48,16 +49,6 @@ function Home() {
                     style={styles.image}
                 />
                 <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
-                <h1 style={styles.texting}>Ajude o Rio Grande do Sul, se possível.</h1>
-                <Image
-                    src="/RS.png"
-                    width={500}
-                    height={300}
-                    alt="Picture of the author's dog"
-                    style={styles.image}
-                    href
-                />
-                <a style={styles.link} href="https://www.vakinha.com.br/4712837">vakinha para ajudar o Rio Grande do Sul</a>
                 <Analytics />
             </div>
         </>
