@@ -40,7 +40,6 @@ function Home() {
             </Head>
             <div style={styles.container}>
                 <h1 style={styles.texting}>Under construction by SebasOnRails</h1>
-                <h2>This is not being on a good development system</h2>
                 <Image
                     src="/dog.jpg"
                     width={300}
