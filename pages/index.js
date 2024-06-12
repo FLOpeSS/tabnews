@@ -11,7 +11,7 @@ const styles = {
         textAlign: 'center',
         marginTop: '50px'
     },
-    image: {
+    dog: {
         display: 'block',
         margin: 'auto',
         marginBottom: '10px',
@@ -45,7 +45,7 @@ function Home() {
                     width={300}
                     height={300}
                     alt="Picture of the author's dog"
-                    style={styles.image}
+                    style={styles.dog}
                 />
                 <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
                 <Analytics />
