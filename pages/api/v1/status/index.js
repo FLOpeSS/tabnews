@@ -4,8 +4,6 @@ async function status(req, res) {
     const date = new Date()
     const updatedAt = date.toISOString()
 
-
-
     const versionQuery = await database.query("SHOW server_version;")
     const serverVersion = versionQuery.rows[0].server_version
 
