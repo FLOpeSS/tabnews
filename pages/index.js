@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react"
 import Image from 'next/image'
 import Head from "next/head";
+import Layout from "models/Layout.js"
 
 const styles = {
     container: {
@@ -29,6 +30,18 @@ const styles = {
     }
 }
 
+
+// function Home() {
+//     <Layout>
+//         <h1>My blog</h1>
+//         <ul>
+//         {posts.map((post) => {
+//
+//         })} 
+//         </ul>
+//     </Layout>
+// }
+
 function Home() {
     return (
         <>
@@ -40,13 +53,6 @@ function Home() {
             </Head>
             <div style={styles.container}>
                 <h1 style={styles.texting}>Under construction by SebasOnRails</h1>
-                <Image
-                    src="/dog.jpg"
-                    width={300}
-                    height={300}
-                    alt="Picture of the author's dog"
-                    style={styles.dog}
-                />
                 <h1 style={styles.texting}>By the way, this is my dog smiling</h1>
                 <Analytics />
             </div>
