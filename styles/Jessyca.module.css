@@ -426,14 +426,17 @@
 
 /* Mobile Performance Optimizations */
 @media (max-width: 768px) {
-  .auroraCurtain, 
-  .nebula::before, 
-  .nebula::after {
-    display: none;
+    .auroraCurtain,
+    .nebula::before,
+    .nebula::after {
+      display: none;
+    }
+  
+    .surpriseMessage h2 {
+      font-size: 2rem; /* Adjusted for mobile */
+    }
   }
-}
-
-@keyframes drawLine {
+  @keyframes drawLine {
   to {
     stroke-dashoffset: 0;
   }
