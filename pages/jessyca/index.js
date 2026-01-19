@@ -5,17 +5,17 @@ import Image from 'next/image';
 const memories = [
   // These points are arranged to form the letter "J" when connected in order
   {
-    image: '/jessyca.jpg', // Corrected path
+    image: '/jp1.jpg', // Corrected path
     text: 'Só quero falar que te amo de uma forma diferente, às vezes não é muito fácil!',
     position: { top: '30%', left: '60%' } // Top of the "J"
   },
   {
-    image: '/dog.jpg', // Corrected path
+    image: '/jp2.jpg', // Corrected path
     text: 'Espero que goste, é simples, mas é uma maneira verdadeira que encontrei',
     position: { top: '70%', left: '60%' } // Bottom of the "J" stem
   },
   {
-    image: '/jessyca.jpg', // Corrected path
+    image: '/jp3.jpg', // Corrected path
     text: 'Minha foto favorita sua',
     position: { top: '70%', left: '40%' } // Hook of the "J"
   }
