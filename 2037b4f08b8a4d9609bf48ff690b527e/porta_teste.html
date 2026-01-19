@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PORTAL SUPORTE UTUA • v2.8.2</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
+
+
+
+
+<style>
+:root{--bg:#0e4b45;--box:#fff;--ink:#0e3b36;--muted:#55716c;--cta:#ff7a45;--stroke:#e7efed;--ok:#23b26b;--bad:#ef4444}
+*{box-sizing:border-box} html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{display:flex;background:#eef6f4;color:var(--ink)}
+
+
+.aside {
+  width: 260px;
+  background: linear-gradient(180deg,#0f645b,#0b3f39);
+  color: #fff;
+  height: 100vh;               /* força ocupar altura total da tela */
+  position: fixed;             /* fixa na lateral mesmo ao rolar */
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.brand{padding:22px 18px 8px;font-weight:800;letter-spacing:.6px}
+.brand small{display:block;color:#a6d7d1;margin-top:4px}
+.nav a{display:block;padding:11px 18px;border-left:3px solid transparent;color:#d8f3ef;text-decoration:none}
+.nav a:hover{background:#0d534a} .nav a.active{background:#0c4a43;border-color:#ffb38f;color:#fff;font-weight:700}
+.submenu{margin-left:10px;border-left:1px solid rgba(255,255,255,.15)}
+.submenu a{font-size:13px;color:#cbeee8;padding:8px 18px}
+.meta{font-size:12px;color:#bfe6e0;padding:10px 18px 16px;border-top:1px solid rgba(255,255,255,.1);margin-top:16px}
+.btn{border:0;background:var(--cta);color:#fff;border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:700}
+.btn.ghost{background:#fff;color:#0f4b44;border:1px solid var(--stroke)} .btn.small{padding:6px 10px;font-size:12px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--stroke);border-radius:8px;background:#fff}
+.grid{display:grid;gap:16px}
+
+.cols-2{grid-template-columns:1fr; gap:24px;}
+
+.cols-3{grid-template-columns:repeat(3,1fr)} .cols-4{grid-template-columns:repeat(4,1fr)}
+.header{display:flex;align-items:center;gap:8px;margin-bottom:14px}.badge{font-size:11px;background:#0d4e46;color:#cbeee8;border:1px solid #1b6a60;padding:2px 8px;border-radius:20px}
+.kpi{background:#fff;border:1px solid var(--stroke);border-radius:14px;padding:14px}.kpi h4{margin:0 0 6px;font-size:13px;color:#4f6e6a}.kpi .big{font-weight:900;font-size:22px;color:#0f4b44}
+.card{background:#fff;border:1px solid var(--stroke);border-radius:16px;padding:16px}
+.wrap{flex:1;min-width:0;padding:20px 22px}.section{margin-bottom:18px}.title{font-size:22px;font-weight:900;margin:0 0 6px;color:#0f4b44}
+.hr{height:1px;background:var(--stroke);margin:14px 0} footer{color:#6a8581;padding:22px}
+.hidden{display:none} .note{font-size:12px;color:#6b8a85} .bad{color:var(--bad)} .ok{color:var(--ok)}
+.toast{position:fixed;right:16px;bottom:16px;background:#0f4b45;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);display:none}
+.login{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+.login .box{background:#fff;padding:22px;border-radius:16px;width:min(420px,92vw)}
+table{border-collapse:collapse;width:100%} th,td{border-bottom:1px solid var(--stroke);padding:8px 6px;text-align:left;font-size:13px}
+
+.wrap {
+  flex: 1;
+  min-width: 0;
+  padding: 20px 22px;
+  margin-left: 260px; /* compensa a largura da barra lateral */
+}
+
+.nav {
+  margin-top: 0;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+
+</style>
+</head>
+
+
+
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="aside">
+  <div class="brand">PORTAL SUPORTE UTUA <small>Painel de dados centralizado</small></div>
+  <nav class="nav" id="menu">
+    <a href="#overview" class="active">Overview</a>
+    <a href="#meta">Meta / Páginas <span class="badge">OCR</span></a>
+    <div id="pagesSubmenu" class="submenu"></div>
+    <a href="#gam">GAM (Monetização)</a>
+    <a href="#pipefy">Pipefy</a>
+    <a href="#tiktok">TikTok</a>
+    <a href="#config">Configurações</a>
+  </nav>
+  <div class="meta">
+    <div id="userInfo">Usuário: —</div>
+    <div id="lastSync" class="note">Última sincronização: —</div>
+    <button class="btn small ghost" id="btnLogout">Sair</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="wrap">
+
+  <!-- Overview -->
+  <section id="overview" class="section">
+
+   
+<div class="card">
+  <div class="header">
+
+<!-- PRIMEIRO CARD: ATENDIMENTO -->
+    <strong>Comunicação & Atendimento</strong>
+    <span class="badge">Meta + Pipefy + TikTok</span>
+  </div>
+
+  <!-- Indicadores principais do Meta -->
+  <div class="grid cols-4">
+    <div class="kpi"><h4>Mensagens (Meta)</h4><div class="big" id="ov_msg">0</div></div>
+    <div class="kpi"><h4>Respondidas (Meta)</h4><div class="big" id="ov_resp">0</div></div>
+    <div class="kpi"><h4>Taxa de resposta (Meta)</h4><div class="big" id="ov_txa">0%</div></div>
+    <div class="kpi"><h4>Tempo médio (Meta)</h4><div class="big" id="ov_tmp">—</div></div>
+  </div>
+
+  <!-- Gráfico de mensagens -->
+  <div class="hr"></div>
+  <div class="card">
+    <canvas id="chMsgs" height="110"></canvas>
+  </div>
+
+  <!-- Resumo Pipefy -->
+  <div class="hr"></div>
+  <div class="header"><strong>Resumo Pipefy / semana</strong></div>
+  <div class="grid cols-4">
+    <div class="kpi"><h4>Tickets</h4><div class="big" id="ov_tk_total">0</div></div>
+    <div class="kpi"><h4>Concluídos</h4><div class="big" id="ov_tk_conc">0</div></div>
+    <div class="kpi"><h4>Sem retorno</h4><div class="big" id="ov_tk_sem">0</div></div>
+    <div class="kpi"><h4>Pendentes</h4><div class="big" id="ov_tk_pend">0</div></div>
+  </div>
+
+  <!-- CSAT -->
+  <div class="hr"></div>
+  <div class="grid cols-4">
+    <div class="kpi"><h4>CSAT (Média)</h4><div class="big" id="ov_csat">0</div></div>
+  </div>
+</div>
+
+<!-- SEGUNDO CARD: MONETIZAÇÃO & PERFORMANCE -->
+    
+    <div class="card">
+      <div class="header"><strong>Monetização & Performance</strong><span class="badge">GAM</span></div>
+      <div class="grid cols-4">
+        <div class="kpi"><h4>Receita</h4><div class="big" id="ov_rev">R$ 0</div></div>
+        <div class="kpi"><h4>Cliques</h4><div class="big" id="ov_clk">0</div></div>
+        <div class="kpi"><h4>Impressões</h4><div class="big" id="ov_imp">0</div></div>
+        <div class="kpi"><h4>CTR</h4><div class="big" id="ov_ctr">0%</div></div>
+      </div>
+      <div class="hr"></div>
+      <div class="card"><canvas id="chRev" height="110"></canvas></div>
+</div>
+
+  </div>
+</section>
+
+
+
+
+  </section>
+
+  <!-- Meta / Pages + OCR -->
+  <section id="meta" class="section hidden">
+    <div class="header"><h2 class="title">Meta • Páginas & Upload de prints (OCR)</h2><span class="badge">salva no Firestore</span></div>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="header"><strong>Criar/editar página</strong></div>
+        <label>Nome da página</label><input id="pg_nome" placeholder="Colombia Tarjetas"/>
+        <div class="grid cols-3">
+          <div><label>País</label><input id="pg_pais" placeholder="Colombia"/></div>
+          <div><label>Idioma</label><input id="pg_idioma" placeholder="es"/></div>
+          <div><label>Responsável</label><input id="pg_owner" placeholder="Letícia"/></div>
+        </div>
+        <label>Status</label>
+        <select id="pg_status">
+          <option value="atualizada">Atualizada</option>
+          <option value="pendente">Com pendências</option>
+          <option value="suspensa">Suspensa</option>
+          <option value="bloqueada">Bloqueada</option>
+        </select>
+        <div style="margin-top:10px"><button class="btn" id="btnSavePage">Salvar página</button></div>
+        <div class="note" id="pg_msg" style="margin-top:8px">—</div>
+
+
+<div class="card" style="margin-top:20px">
+  <div class="header" style="display:flex;justify-content:space-between;align-items:center">
+  <strong>Evolução da página selecionada</strong>
+  <button class="btn small ghost" id="btnPageRefresh" style="font-size:12px;padding:4px 8px;">🔄 Atualizar</button>
+</div>
+
+
+      </div>
+
+      <div class="card">
+        <div class="header"><strong>Upload de prints (OCR)</strong></div>
+        <label>Nome da página</label><input id="ocr_nome" placeholder="Colombia Tarjetas"/>
+        <div class="grid cols-3">
+          <div><label>Data</label><input id="ocr_data" type="date"/></div>
+          <div><label>Imagens (PNG/JPG)</label><input id="ocr_files" type="file" multiple accept=".png,.jpg,.jpeg"/></div>
+          <div style="align-self:end"><button class="btn" id="btnRunOCR">Rodar OCR & salvar</button></div>
+        </div>
+        <div class="note" style="margin-top:8px">Extrai: Mensagens, Respondidas, Taxa (%), Tempo (hh:mm) e CSAT.</div>
+        <pre id="ocrPreview" class="note" style="white-space:pre-wrap;background:#f5fbf9;border:1px dashed #cde7df;padding:8px;border-radius:8px;margin-top:10px"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAM -->
+  <section id="gam" class="section hidden">
+    <div class="header"><h2 class="title">GAM • Upload de CSV</h2><span class="badge">Firestore</span></div>
+    <div class="card">
+      <div class="grid cols-2">
+        <div>
+          <label>CSV exportado do GAM</label>
+          <input id="gam_csv" type="file" accept=".csv"/>
+          <div style="margin-top:10px"><button class="btn" id="btnGamImport">Importar & gravar</button></div>
+          <div class="note" style="margin-top:8px">Aceita cabeçalhos PT-BR ou EN: <b>date, revenue, imps, clicks, ctr</b> (mapeia “Data, Receita total, Total de impressões, Total de cliques, CTR”).</div>
+          <div id="gam_err" class="bad" style="margin-top:8px"></div>
+        </div>
+        <div>
+          <div class="header"><strong>Prévia</strong></div>
+          <textarea id="gam_preview" rows="10" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ 
+
+<!-- Pipefy -->
+<section id="pipefy" class="section hidden">
+  <div class="header">
+    <h2 class="title">Pipefy • API + Upload manual</h2><span class="badge">Firestore</span>
+  </div>
+
+  <div class="grid cols-2">
+    <div class="card">
+      <div class="header"><strong>Upload manual (CSV)</strong></div>
+      <label>CSV (colunas PT ou EN – id, data, país, idioma, responsável, status, motivo)</label>
+      <input id="pf_csv" type="file" accept=".csv"/>
+      <button class="btn" id="btnPfUpload" style="margin-top:10px">Importar & gravar</button>
+      <div id="pf_err" class="bad" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <div class="header"><strong>Ler cards via API</strong></div>
+      <label>Token Pipefy</label><input id="pf_token" placeholder="ppf_xxx"/>
+      <label>Pipe ID</label><input id="pf_pipe" placeholder="ex: 123456789"/>
+      <button class="btn" id="btnPfApi" style="margin-top:10px">Ler cards</button>
+      <div class="note" id="pf_api_msg" style="margin-top:8px">—</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="header"><strong>Resumo de tickets (última semana)</strong></div>
+    <div class="grid cols-3">
+      <div class="kpi"><h4>Total</h4><div class="big" id="pf_total">0</div></div>
+      <div class="kpi"><h4>Concluídos</h4><div class="big ok" id="pf_done">0</div></div>
+      <div class="kpi"><h4>Sem retorno</h4><div class="big bad" id="pf_noreply">0</div></div>
+    </div>
+    <div class="hr"></div>
+    <canvas id="chPipefy" height="110"></canvas>
+  </div>
+</section>
+
+
+  <!-- TikTok -->
+
+<section id="tiktok" class="section hidden">
+  <div class="header">
+    <h2 class="title">TikTok • Upload manual + API</h2>
+    <span class="badge">Firestore</span>
+  </div>
+
+  <div class="grid cols-2">
+
+    <!-- BLOCO MANUAL -->
+    <div class="card">
+      <div class="header"><strong>Upload manual (CSV)</strong></div>
+      <label>Arquivo CSV (colunas: data, campanhas, interações, observações)</label>
+      <input id="tk_csv" type="file" accept=".csv" />
+      <button class="btn" id="btnTkUpload" style="margin-top:10px">Importar & gravar</button>
+      <div id="tk_err" class="bad" style="margin-top:8px"></div>
+      <div class="note" style="margin-top:8px">Os dados serão gravados no Firestore em <b>tiktok_reports</b>.</div>
+    </div>
+
+    <!-- BLOCO API -->
+    <div class="card">
+      <div class="header"><strong>API (placeholder)</strong></div>
+      <label>Access Token</label><input id="tk_token" placeholder="tok_xxx"/>
+      <label>Advertiser ID</label><input id="tk_adv" placeholder="123456789"/>
+      <button class="btn ghost" id="btnTkApi" style="margin-top:10px">Testar API</button>
+      <div class="note" id="tk_api_msg" style="margin-top:8px">—</div>
+      <div class="card" style="margin-top:12px"><canvas id="chTikTok" height="110"></canvas></div>
+    </div>
+
+  </div>
+</section>
+
+
+
+  <!-- Config -->
+  <section id="config" class="section hidden">
+    <div class="header"><h2 class="title">Configurações</h2></div>
+    <div class="card">
+      <div class="note">
+        Este build usa Firebase (Firestore) — sem Apps Script.  
+        Admins: leticia.otoni@utua.com.br, chris.watanabe@utua.com.br, suene.dias@utua.com.br
+      </div>
+    </div>
+  </section>
+
+  <footer>Portal Utua Suporte ⓒ 2025</footer>
+</main>
+
+<!-- Login -->
+<div id="login" class="login">
+  <div class="box">
+    <h2>Portal Suporte Utua</h2>
+    <div class="note">Acesso restrito a e-mails <strong>@utua.com.br</strong></div>
+    <label>E-mail corporativo</label>
+    <input id="lg_email" placeholder="nome.sobrenome@utua.com.br"/>
+    <div style="margin-top:10px"><button class="btn" id="btnLogin">Entrar</button></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- FIREBASE + APP -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, setDoc, doc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { writeBatch } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // === Firebase do seu projeto ===
+   // Your web app's Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyCCh--PfpcK0645UiHbOHhIxu7oAxfyzD4",
+  authDomain: "portal-utua-suporte.firebaseapp.com",
+  projectId: "portal-utua-suporte",
+  storageBucket: "portal-utua-suporte.firebasestorage.app",
+  messagingSenderId: "1058790225595",
+  appId: "1:1058790225595:web:76b88bc415d7a95f8e9b9e"
+};
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+
+  // ===== Utils =====
+  const ADMINS = ['leticia.otoni@utua.com.br','chris.watanabe@utua.com.br','suene.dias@utua.com.br'];
+  const toast = (msg, ok=true)=>{ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; t.style.background=ok?'#0f4b45':'#a02d2d'; setTimeout(()=>t.style.display='none',2800); };
+  function show(hash){ document.querySelectorAll('main .section').forEach(s=>s.classList.add('hidden')); document.querySelector(hash).classList.remove('hidden'); document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active')); document.querySelector(`.nav a[href="${hash}"]`).classList.add('active'); }
+  document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();show(a.getAttribute('href'));}));
+  const byId=(id)=>document.getElementById(id);
+  const toNum = v => Number(String(v??0).toString().replace(/[^\d,-.]/g,'').replace(/\./g,'').replace(',','.'))||0;
+
+  
+
+// ===== LOGIN =====
+
+let USER = localStorage.getItem('utua.user') || '';
+
+function applyLogin(email) {
+  USER = email;
+  localStorage.setItem('utua.user', email);
+  document.getElementById('userInfo').textContent = 'Usuário: ' + email;
+  document.getElementById('login').style.display = 'none';
+  document.querySelector('#menu a').click();
+  toast('Bem-vinda(o), ' + email + '!');
+  loadAll(); // carrega overview e dados
+}
+
+document.getElementById('btnLogin').onclick = () => {
+  const email = document.getElementById('lg_email').value.trim().toLowerCase();
+  if (!/@utua\.com\.br$/.test(email)) {
+    toast('Use seu e-mail @utua.com.br', false);
+    return;
+  }
+  applyLogin(email);
+};
+
+document.getElementById('btnLogout').onclick = () => {
+  localStorage.removeItem('utua.user');
+  location.reload();
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('utua.user');
+  if (saved && /@utua\.com\.br$/.test(saved)) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('userInfo').textContent = 'Usuário: ' + saved;
+USER = saved;
+    loadAll();
+  }
+});
+
+
+
+
+  // ===== Charts singleton (evita “Canvas already in use”) =====
+  const Charts = { msgs:null, rev:null };
+  function drawMsgs(labels, data){
+    if(Charts.msgs){ Charts.msgs.destroy(); }
+    Charts.msgs = new Chart(byId('chMsgs'), {
+      type:'line', data:{labels, datasets:[{label:'Mensagens', data}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+    });
+  }
+  function drawRev(labels, data){
+    if(Charts.rev){ Charts.rev.destroy(); }
+    Charts.rev = new Chart(byId('chRev'), {
+      type:'line', data:{labels, datasets:[{label:'Receita', data}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+    });
+  }
+
+  // ===== Submenu de páginas =====
+  async function refreshPagesSubmenu(){
+    const cont = byId('pagesSubmenu'); cont.innerHTML='';
+    const onlyMine = !ADMINS.includes(USER);
+    const col = collection(db,'meta_pages');
+    const snap = onlyMine ? await getDocs(query(col, where('owner','==', USER))) : await getDocs(col);
+    const pages = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>a.nome.localeCompare(b.nome));
+    pages.forEach(p=>{
+      const a=document.createElement('a'); a.href='#meta'; a.textContent='• '+p.nome; a.onclick=(e)=>{e.preventDefault();show('#meta'); byId('pg_nome').value=p.nome; byId('pg_pais').value=p.pais||''; byId('pg_idioma').value=p.idioma||''; byId('pg_owner').value=p.owner||''; byId('pg_status').value=p.status||'atualizada'; };
+drawPageChart(p.nome);
+
+
+
+
+      cont.appendChild(a);
+    });
+    byId('ov_pages').textContent = pages.length;
+  }
+
+  // ===== Overview (Meta + GAM) =====
+  async function loadAll(){
+    await refreshPagesSubmenu();
+
+    // META uploads
+    const onlyMine = !ADMINS.includes(USER);
+    const uplCol = collection(db,'meta_uploads');
+    const upSnap = onlyMine ? await getDocs(query(uplCol, where('owner','==', USER))) : await getDocs(uplCol);
+    const uploads = upSnap.docs.map(d=>d.data());
+console.log('✅ Uploads Meta carregados:', uploads);
+    const sum = (arr,sel)=>arr.reduce((a,x)=>a+(+sel(x)||0),0);
+    const msgs = sum(uploads, u=>u.mensagens);
+    const resp = sum(uploads, u=>u.respondidas);
+    const csat = (uploads.length? (sum(uploads,u=>Number(u.csat)||0)/uploads.length) : 0).toFixed(1);
+    byId('ov_msg').textContent = msgs; byId('ov_resp').textContent = resp; byId('ov_csat').textContent = isNaN(csat)?'0':csat;
+
+    // Gráfico mensagens por data
+    const perDate = {};
+    uploads.forEach(u=>{ if(u.data){ perDate[u.data]=(perDate[u.data]||0) + (+u.mensagens||0);} });
+    const dLabels = Object.keys(perDate).sort();
+    drawMsgs(dLabels, dLabels.map(k=>perDate[k]));
+
+    // GAM
+    const gcol= collection(db,'gam_reports');
+    const gdocs = (await getDocs(gcol)).docs.map(d=>d.data());
+console.log('✅ GAM Reports carregados:', gdocs);
+    const rev = gdocs.reduce((a,g)=>a+toNum(g.revenue),0);
+    const imp = gdocs.reduce((a,g)=>a+toNum(g.imps),0);
+    const clk = gdocs.reduce((a,g)=>a+toNum(g.clicks),0);
+    const ctr = (imp? (clk/imp*100):0).toFixed(2);
+    byId('ov_rev').textContent = 'R$ '+rev.toLocaleString('pt-BR');
+    byId('ov_imp').textContent = imp; byId('ov_clk').textContent = clk; byId('ov_ctr').textContent = ctr+'%';
+
+    const revByDay = {};
+    gdocs.forEach(g=>{ const d=g.date?.slice(0,10); if(d) revByDay[d]=(revByDay[d]||0)+toNum(g.revenue); });
+    const rLab = Object.keys(revByDay).sort();
+    drawRev(rLab, rLab.map(d=>revByDay[d]));
+
+    byId('lastSync').textContent='Última sincronização: '+new Date().toLocaleString('pt-BR');
+
+
+await loadPipefyDashboard();
+
+
+  }
+
+  // ===== Salvar Página =====
+  byId('btnSavePage').onclick = async ()=>{
+    try{
+      const payload = {
+        nome: byId('pg_nome').value.trim(),
+        pais: byId('pg_pais').value.trim(),
+        idioma: byId('pg_idioma').value.trim(),
+        owner: byId('pg_owner').value.trim() || USER,
+        status: byId('pg_status').value || 'atualizada',
+        createdAt: serverTimestamp()
+      };
+      if(!payload.nome){ toast('Informe o nome da página',false); return; }
+      await addDoc(collection(db,'meta_pages'), payload);
+      byId('pg_msg').textContent='Página salva!';
+      await addDoc(collection(db,'logs'), {ts:new Date().toISOString(), usuario:USER, acao:'salvar_pagina', secao:'meta', detalhes:payload.nome});
+      await refreshPagesSubmenu();
+      toast('Página salva no Firestore.');
+    }catch(e){ toast('Falha ao salvar página: '+e.message,false); }
+  };
+
+
+
+async function drawPageChart(pageName) {
+  const ctx = byId('chPageMsgs');
+  if (!ctx || !pageName) return;
+
+  const q = query(collection(db, 'meta_uploads'), where('page', '==', pageName));
+  const snap = await getDocs(q);
+  const docs = snap.docs.map(d => d.data());
+
+  if (!docs.length) {
+    const c = ctx.getContext('2d');
+    c.clearRect(0, 0, ctx.width, ctx.height);
+    c.font = '14px Inter';
+    c.fillStyle = '#888';
+    c.fillText('Sem dados para esta página ainda.', 20, 40);
+    return;
+  }
+
+  // Agrupa por data
+  const grouped = {};
+  docs.forEach(d => {
+    if (!d.data) return;
+    const dia = d.data;
+    if (!grouped[dia]) grouped[dia] = { mensagens: 0, respondidas: 0, csat: [] };
+    grouped[dia].mensagens += Number(d.mensagens) || 0;
+    grouped[dia].respondidas += Number(d.respondidas) || 0;
+    if (d.csat !== undefined && d.csat !== null) grouped[dia].csat.push(Number(d.csat) || 0);
+  });
+
+  const labels = Object.keys(grouped).sort();
+  const mensagens = labels.map(k => grouped[k].mensagens);
+  const respondidas = labels.map(k => grouped[k].respondidas);
+  const csat = labels.map(k => {
+    const arr = grouped[k].csat;
+    return arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : 0;
+  });
+
+  // Destroi gráfico anterior se houver
+  if (window.pageChart) window.pageChart.destroy();
+
+  // Cria novo gráfico com 2 eixos
+  window.pageChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Mensagens', data: mensagens, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.1)', tension: 0.3, yAxisID: 'y' },
+        { label: 'Respondidas', data: respondidas, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', tension: 0.3, yAxisID: 'y' },
+        { label: 'CSAT médio', data: csat, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.15)', tension: 0.3, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { color: '#333' } } },
+      scales: {
+        y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Qtd mensagens', color: '#16a34a' } },
+        y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'CSAT', color: '#f59e0b' } }
+      }
+    }
+  });
+}
+
+// === Botão "Atualizar gráfico" ===
+byId('btnPageRefresh').onclick = async () => {
+  const nome = byId('pg_nome').value.trim();
+  if (!nome) {
+    toast('Abra uma página para atualizar o gráfico.', false);
+    return;
+  }
+  toast('Atualizando gráfico...');
+  await drawPageChart(nome);
+  toast('Gráfico atualizado!');
+};
+
+
+
+  // ===== OCR Meta =====
+  byId('btnRunOCR').onclick = async ()=>{
+    const files = Array.from(byId('ocr_files').files||[]);
+    const nome = byId('ocr_nome').value.trim();
+    const data = byId('ocr_data').value;
+    if(!files.length){ toast('Escolha imagens',false); return; }
+    if(!nome||!data){ toast('Preencha nome e data',false); return; }
+
+    const texts=[];
+    for(const f of files){ const r = await Tesseract.recognize(f,'por+eng+spa'); texts.push(r.data.text); }
+    const txt = texts.join('\n').toLowerCase(); const pick = re => (txt.match(re)||[])[1]||'';
+    const rec = {
+      page:nome, owner: USER, data,
+      mensagens: +(pick(/mensagens?:\s*(\d+)/))||0,
+      respondidas: +(pick(/respondidas?:\s*(\d+)/))||0,
+      taxa: +(pick(/taxa\s*de\s*resposta[: ]\s*([\d.,]+)/)||'').toString().replace(',','.')||0,
+      tempo: pick(/tempo\s*m[eé]dio[: ]\s*([\dh: m]+)/) || '',
+      csat: +(pick(/csat[: ]\s*([\d.,]+)/)||'').toString().replace(',','.')||0
+    };
+    byId('ocrPreview').textContent = 'Extraído:\n'+JSON.stringify(rec,null,2);
+
+    try{
+      await addDoc(collection(db,'meta_uploads'), {...rec, createdAt: serverTimestamp()});
+      await addDoc(collection(db,'logs'), {ts:new Date().toISOString(), usuario:USER, acao:'upload_ocr', secao:'meta', detalhes:rec.page});
+      toast('OCR salvo.'); 
+await loadAll();
+    }catch(e){ toast('Falha ao salvar OCR: '+e.message,false); }
+  };
+
+
+  // ===== GAM CSV (PT/EN) =====
+
+
+
+  function csvToRows(csv){ const lines = csv.replace(/\r/g,'').split('\n').filter(x=>x.trim()); if(!lines.length) return []; const headers = lines.shift().split(',').map(h=>h.trim().toLowerCase()); return lines.map(line=>{ const cols=line.split(','); const obj={}; headers.forEach((h,i)=> obj[h]=cols[i]); return obj; }); }
+
+
+
+// --- Normaliza cabeçalhos PT/EN para o padrão esperado ---
+function normalizeGam(rows) {
+  const keyMap = {
+    'data': 'date',
+    'país': 'country',
+    'pais': 'country',
+    'bloco de anúncios': 'ad_unit',
+    'id do país': 'country_id',
+    'id do bloco de anúncios': 'adunit_id',
+    'total de impressões': 'imps',
+    'total de impressoes': 'imps',
+    'total de impressões (ad exchange)': 'imps',
+    'total de cliques': 'clicks',
+    'receita total (r$)': 'revenue',
+    'receita total': 'revenue',
+    'receita total (ad exchange)': 'revenue',
+    'ctr do ad exchange': 'ctr',
+    'ctr': 'ctr',
+    'ecpm médio do ad exchange (r$)': 'ecpm',
+    'ecpm medio do ad exchange (r$)': 'ecpm'
+  };
+
+
+  return rows.map(r => {
+    const out = {};
+    Object.keys(r).forEach(k => {
+      const kk = keyMap[k.trim().toLowerCase()];
+      if (kk) {
+        let val = String(r[k] || '').trim();
+
+        // Corrige formato BR → número JS
+        val = val
+          .replace(/\s/g, '')             // remove espaços
+          .replace(/[R$\u00A0]/g, '')     // remove R$, espaços não quebráveis
+          .replace(/%/g, '')              // remove %
+          .replace(/\./g, '')             // remove separadores de milhar
+          .replace(',', '.');             // vírgula decimal → ponto
+
+// Converte para número (exceto data)
+        if (kk === 'date') {
+          out[kk] = val;
+        } else {
+          out[kk] = parseFloat(val) || 0;
+}
+      }
+    });
+    return out;
+});
+}
+
+
+
+
+document.getElementById('btnGamImport').onclick = async ()=>{
+  const f = byId('gam_csv').files[0];
+  const errEl = byId('gam_err');
+  errEl.textContent = '';
+  if (!f) { errEl.textContent = 'Selecione um CSV.'; return; }
+
+  const txt = await f.text();
+  byId('gam_preview').value = txt.slice(0, 4000);
+// === LIMPA LINHAS DE CABEÇALHO OU RELATÓRIO EXTRA ===
+const startIndex = txt.split('\n').findIndex(l => l.toLowerCase().includes('data'));
+const csvClean = startIndex >= 0 ? txt.split('\n').slice(startIndex).join('\n') : txt;
+
+
+  try {
+    // === DETECTA SEPARADOR (TAB, ; ou ,) ===
+    let sep = '\t';
+    if (txt.includes(';')) sep = ';';
+    else if (txt.includes(',')) sep = ',';
+
+
+
+
+
+
+    // === TRANSFORMA EM OBJETOS ===
+    const lines = csvClean.replace(/\r/g, '').split('\n').filter(l => l.trim());
+    const headers = lines.shift().split(sep).map(h => h.trim().toLowerCase());
+    const rows = lines.map(line => {
+      const cols = line.split(sep);
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = cols[i]);
+      return obj;
+    });
+
+    const norm = normalizeGam(rows);
+    if (!norm.length) throw new Error('Nenhuma linha válida encontrada.');
+
+    // === GRAVAÇÃO EM LOTE (batch) ===
+    const BATCH_SIZE = 400; // até 500 permitido pelo Firestore
+    const totalBatches = Math.ceil(norm.length / BATCH_SIZE);
+
+    for (let i = 0; i < totalBatches; i++) {
+      const chunk = norm.slice(i * BATCH_SIZE, (i + 1) * BATCH_SIZE);
+      const batch = writeBatch(db);
+
+      chunk.forEach(r => {
+        const docRef = doc(collection(db, 'gam_reports'));
+        batch.set(docRef, {
+          date: (r.date || '').slice(0, 10),
+          revenue: toNum(r.revenue),
+          imps: toNum(r.imps),
+          clicks: toNum(r.clicks),
+          ctr: Number(String(r.ctr || 0).replace(',', '.')) || 0,
+          createdAt: serverTimestamp()
+        });
+      });
+
+      await batch.commit();
+      console.log(`✅ Lote ${i + 1}/${totalBatches} gravado (${chunk.length} linhas)`);
+    }
+
+    // === LOG ===
+    await addDoc(collection(db, 'logs'), {
+      ts: new Date().toISOString(),
+      usuario: USER,
+      acao: 'upload_gam_batch',
+      secao: 'gam',
+      detalhes: `linhas=${norm.length}, lotes=${totalBatches}`
+    });
+
+    toast('GAM importado com sucesso! (' + norm.length + ' linhas em ' + totalBatches + ' lotes)');
+await loadAll();
+
+  } catch (e) {
+    errEl.textContent = 'Falha ao processar CSV: ' + e.message;
+console.error(e);
+  }
+};
+
+
+
+
+  // ===== Pipefy: Upload manual =====
+  function csvToRowsPf(csv){ const lines = csv.replace(/\r/g,'').split('\n').filter(x=>x.trim()); if(!lines.length) return []; const headers = lines.shift().split(',').map(h=>h.trim().toLowerCase()); return lines.map(line=>{ const cols=line.split(','); const obj={}; headers.forEach((h,i)=> obj[h]=cols[i]); return obj; }); }
+  function normalizePf(rows){
+    const map = {
+      'id':'id','card id':'id',
+      'data':'date','date':'date','criado em':'date',
+      'país':'country','pais':'country','country':'country',
+      'idioma':'language','language':'language',
+      'responsável':'assignee','assignee':'assignee',
+      'status':'status',
+      'motivo':'reason','reason':'reason'
+    };
+    return rows.map(r=>{ const out={}; Object.keys(r).forEach(k=>{ const kk=map[k.trim().toLowerCase()]; if(kk) out[kk]=r[k]; }); return out; });
+  }
+  byId('btnPfUpload').onclick = async ()=>{
+    const f = byId('pf_csv').files[0]; const err=byId('pf_err'); err.textContent=''; if(!f){ err.textContent='Selecione CSV.'; return; }
+    const txt = await f.text();
+    try{
+      const rows = normalizePf(csvToRows(txt));
+      if(!rows.length) throw new Error('CSV vazio ou colunas não reconhecidas.');
+      for(const r of rows){ await addDoc(collection(db,'pipefy_tickets'), {...r, createdAt: serverTimestamp()}); }
+      await addDoc(collection(db,'logs'), {ts:new Date().toISOString(), usuario:USER, acao:'upload_pipefy_csv', secao:'pipefy', detalhes:'linhas='+rows.length});
+      toast('Pipefy CSV gravado.'); 
+await loadAll();
+    }catch(e){ err.textContent='Falha: '+e.message; }
+  };
+
+  // ===== Pipefy: API (token) =====
+  byId('btnPfApi').onclick = async ()=>{
+    try{
+      const token = byId('pf_token').value.trim(); const pipeId=byId('pf_pipe').value.trim();
+      if(!token||!pipeId){ toast('Informe token e Pipe ID.',false); return; }
+      const queryGQL = `query{ pipe(id:${pipeId}){ cards(first:50){ edges{ node{ id createdAt title } } } } }`;
+      const r = await fetch('https://api.pipefy.com/graphql',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({query:queryGQL})});
+      if(!r.ok) throw new Error(await r.text());
+      const j = await r.json();
+      const rows = (j?.data?.pipe?.cards?.edges||[]).map(e=>({id:e.node.id,date:e.node.createdAt.slice(0,10),status:'',assignee:'',reason:''}));
+      for(const row of rows){ await addDoc(collection(db,'pipefy_tickets'), {...row, createdAt: serverTimestamp()}); }
+      byId('pf_api_msg').textContent='Lidos '+rows.length+' cards (gravados no Firestore).';
+      await addDoc(collection(db,'logs'), {ts:new Date().toISOString(), usuario:USER, acao:'pipefy_api_read', secao:'pipefy', detalhes:'cards='+rows.length});
+      toast('Pipefy API OK.'); 
+await loadAll();
+    }catch(e){ byId('pf_api_msg').textContent='Falha: '+e.message; toast('Pipefy API falhou: '+e.message,false); }
+  };
+
+
+
+// ===== PIPEFY DASHBOARD =====
+async function loadPipefyDashboard() {
+  const pfSnap = await getDocs(collection(db, 'pipefy_tickets'));
+  const docs = pfSnap.docs.map(d => d.data());
+
+  // Filtros por status
+  const total = docs.length;
+  const concluidos = docs.filter(d => (d.status || '').toLowerCase().includes('concluído')).length;
+  const semRetorno = docs.filter(d => (d.status || '').toLowerCase().includes('sem retorno')).length;
+
+  byId('pf_total').textContent = total;
+  byId('pf_done').textContent = concluidos;
+  byId('pf_noreply').textContent = semRetorno;
+
+  // Gráfico de barras: tickets por status
+  const porStatus = {};
+  docs.forEach(d => {
+    const st = (d.status || 'sem status').toLowerCase();
+    porStatus[st] = (porStatus[st] || 0) + 1;
+  });
+
+  const labels = Object.keys(porStatus);
+  const data = Object.values(porStatus);
+
+  new Chart(byId('chPipefy'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Tickets por status',
+        data,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+
+  
+// ===== TikTok =====
+
+// Upload manual CSV
+byId('btnTkUpload').onclick = async ()=>{
+  const f = byId('tk_csv').files[0];
+  const err = byId('tk_err');
+  err.textContent = '';
+  if(!f){ err.textContent='Selecione um CSV.'; return; }
+
+  try {
+    const txt = await f.text();
+    const lines = txt.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+    if(!lines.length){ err.textContent='Arquivo vazio.'; return; }
+
+    const headers = lines.shift().split(',').map(h=>h.trim().toLowerCase());
+    const rows = lines.map(l=>{
+      const cols=l.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=cols[i]);
+      return obj;
+    });
+
+    for(const r of rows){
+      await addDoc(collection(db,'tiktok_reports'), {
+        date: r.data || '',
+        campanhas: r.campanhas || '',
+        interacoes: Number(r.interacoes || 0),
+        observacoes: r.observacoes || '',
+        owner: USER,
+        createdAt: serverTimestamp()
+      });
+    }
+
+    await addDoc(collection(db,'logs'), {
+      ts:new Date().toISOString(),
+      usuario:USER,
+      acao:'tiktok_upload_csv',
+      secao:'tiktok',
+      detalhes:'linhas='+rows.length
+    });
+
+    toast('TikTok CSV gravado com sucesso!');
+    await loadAll();
+
+  } catch(e) {
+    err.textContent='Falha: '+e.message;
+    toast('Erro ao importar TikTok: '+e.message,false);
+  }
+};
+
+// Botão API (placeholder)
+byId('btnTkApi').onclick = ()=>{
+  byId('tk_api_msg').textContent='Placeholder: integração será ativada quando o token TikTok Ads estiver disponível.';
+};
+
+
+
+  // init
+  show('#overview');
+  if(USER) loadAll();
+
+
+// ===== DEBUG: inserir dados de teste =====
+window.addTestData = async () => {
+  try {
+    await addDoc(collection(db, 'meta_uploads'), {
+      page: 'Teste OCR',
+      owner: USER,
+      data: new Date().toISOString().slice(0,10),
+      mensagens: 132,
+      respondidas: 110,
+      taxa: 83.3,
+      tempo: '1h30m',
+      csat: 9.2,
+      createdAt: serverTimestamp()
+    });
+    await addDoc(collection(db, 'gam_reports'), {
+      date: new Date().toISOString().slice(0,10),
+      revenue: 245.75,
+      imps: 5200,
+      clicks: 330,
+      ctr: 6.3,
+      createdAt: serverTimestamp()
+    });
+    toast('✅ Dados de teste inseridos! Atualizando...');
+    setTimeout(loadAll, 3000);
+  } catch (e) {
+    toast('Erro ao criar dados de teste: ' + e.message, false);
+}
+};
+
+// ===== TESTE AUTOMÁTICO =====
+window.addEventListener('load', async () => {
+  if (USER && USER.includes('@utua.com.br')) {
+try{
+      console.log('🚀 Teste: criando documento de exemplo em meta_uploads...');
+      await addDoc(collection(db, 'meta_uploads'), {
+        page: 'Teste OCR (auto)',
+        owner: USER,
+        data: new Date().toISOString().slice(0,10),
+        mensagens: 123,
+        respondidas: 95,
+        taxa: 77.2,
+        tempo: '1h45m',
+        csat: 8.9,
+        createdAt: serverTimestamp()
+      });
+      console.log('✅ Documento de teste criado com sucesso!');
+    } catch (err) {
+      console.error('❌ Erro ao criar doc de teste:', err);
+}
+  }
+});
+
+
+
+</script>
+</body>
+</html>
