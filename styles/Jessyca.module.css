@@ -433,7 +433,7 @@
     }
   
     .surpriseMessage h2 {
-      font-size: 2rem; /* Adjusted for mobile */
+      font-size: 10px; /* Adjusted for mobile */
     }
   }
   @keyframes drawLine {
