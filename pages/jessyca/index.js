@@ -5,19 +5,19 @@ import Image from 'next/image';
 const memories = [
   // These points are arranged to form the letter "J" when connected in order
   {
-    image: '/j1.jpg',
+    image: '/jessyca.jpg', // Corrected path
     text: 'Só quero falar que te amo de uma forma diferente, às vezes não é muito fácil!',
-    position: { top: '20%', left: '70%' } // Top of the "J"
+    position: { top: '30%', left: '60%' } // Top of the "J"
   },
   {
-    image: '/j2.jpg',
+    image: '/dog.jpg', // Corrected path
     text: 'Espero que goste, é simples, mas é uma maneira verdadeira que encontrei',
-    position: { top: '50%', left: '70%' } // Bottom of the "J" stem
+    position: { top: '70%', left: '60%' } // Bottom of the "J" stem
   },
   {
-    image: '/j3.jpg',
+    image: '/jessyca.jpg', // Corrected path
     text: 'Minha foto favorita sua',
-    position: { top: '70%', left: '20%' } // Hook of the "J"
+    position: { top: '70%', left: '40%' } // Hook of the "J"
   }
 ];
 
@@ -43,7 +43,7 @@ export default function JessycaPage() {
   }, []);
 
   useEffect(() => {
-    const generatedStars = Array.from({ length: 200 }, () => {
+    const generatedStars = Array.from({ length: 100 }, () => { // Reduced star count
       const depth = Math.random();
       return {
         size: (1 - depth) * 3 + 1, // Closer stars are bigger
