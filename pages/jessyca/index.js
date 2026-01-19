@@ -114,7 +114,7 @@ export default function JessycaPage() {
         animationDuration: `${Math.random() * 2 + 2}s`
       };
       setShootingStars(prev => [...prev, newShootingStar]);
-    }, 4000);
+    }, 8000); // Reduced frequency
 
     return () => clearInterval(interval);
   }, []);
@@ -272,7 +272,9 @@ export default function JessycaPage() {
         <div className={styles.modal} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <span className={styles.close} onClick={closeModal}>&times;</span>
-            <Image id="memoryImage" src={modal.image} alt="Memory" width={500} height={300} style={{ objectFit: 'cover' }}/>
+            <div className={styles.imageContainer}>
+              <Image src={modal.image} alt="Memory" fill sizes="100vw" style={{ objectFit: 'cover' }}/>
+            </div>
             <p id="memoryText">{modal.text}</p>
           </div>
         </div>

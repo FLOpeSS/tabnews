@@ -78,10 +78,13 @@
   cursor: pointer;
 }
 
-#memoryImage {
+.imageContainer {
+  position: relative;
   width: 100%;
-  height: auto;
+  aspect-ratio: 16 / 9;
+  background-color: #1a1a1a;
   border-radius: 5px;
+  overflow: hidden; /* Ensures the Image component respects the border-radius */
 }
 
 #memoryText {
@@ -419,6 +422,15 @@
   font-size: 1.2rem;
   margin-top: 20px;
   letter-spacing: 2px;
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  .auroraCurtain, 
+  .nebula::before, 
+  .nebula::after {
+    display: none;
+  }
 }
 
 @keyframes drawLine {
